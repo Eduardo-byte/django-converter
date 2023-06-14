@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-3">   
+        </div>
+        <div class="col-lg-6">
+            {% comment %} <h1>{{pwd}}</h1> {% endcomment %}
+            <script>
+                function addImageUploadField() {
+                  var formContainer = document.getElementById('form-container');
+                  var newForm = document.createElement('div');
+                  newForm.className = 'image-upload';
+                  
+                  var label = document.createElement('label');
+                  label.htmlFor = 'id_image';
+                  label.innerText = 'Image:';
+                  
+                  var input = document.createElement('input');
+                  input.type = 'file';
+                  input.name = 'image';
+                  
+                  newForm.appendChild(label);
+                  newForm.appendChild(input);
+                  formContainer.appendChild(newForm);
+                }
+            </script>
+            {% if uploaded %}
+            {% if saved_image_names %}
+                <a href="{% url 'download_images' %}?{% for name in saved_image_names %}image_names={{ name }}&{% endfor %}">Download Converted Images</a>
+                <button type="button" onclick="window.location.href='/'">Upload New Images</button>
+            {% endif %}
+            
+            {% else %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div id="form-container">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit">Upload</button>
+                <button type="button" onclick="addImageUploadField()">Add More Images</button>
+              </form>
+              {% endif %}
+              
+              {% comment %} {% if img_obj %}
+                <h3>Succesfully uploaded : {{img_obj.title}}</h3>
+                <img src="{{ img_obj.image.url}}" alt="connect" style="max-height:300px">
+                <img src="/media/images/{{img_png}}.png" alt="connect" style="max-height:300px">
+                <a href = "/media/images/{{img_png}}.png" download>Download</a>
+              {% endif %} {% endcomment %}
+
+        </div>
+        <div class="col-lg-3">   
+        </div>
+    </div>
+{% endblock %}
