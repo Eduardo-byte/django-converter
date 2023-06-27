@@ -1,6 +1,6 @@
 from django import forms  
 from django.forms import ModelForm, widgets
-from .models import Image
+from .models import Image, Pdf
 from .widgets import MultiFileInput
 from django import forms
 from multiupload.fields import MultiFileField
@@ -14,3 +14,12 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = ('image',)
+        
+class FileForm(forms.ModelForm):
+    file1 = forms.FileField(label='PDF File 1')
+    file2 = forms.FileField(label='PDF File 2')
+
+    class Meta:
+        model = Pdf
+        fields = ('file1', 'file2')
+        

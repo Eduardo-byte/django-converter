@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            {% if uploaded %}
+                <h2>PDF Files Merged Successfully!</h2>
+                <a href="{{ merged_pdf_path }}" download>Download Merged PDF</a>
+                <button type="button" onclick="window.location.href='/merge_pdf'">Merge More PDFs</button>
+            {% else %}
+                <h2>Merge PDF Files</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div id="form-container">
+                        {{ form.file1.label_tag }}
+                        {{ form.file1 }}
+                        <br>
+                        {{ form.file2.label_tag }}
+                        {{ form.file2 }}
+                    </div>
+                    <button type="submit">Merge</button>
+                </form>
+                <button type="button" onclick="addFileUploadField()">Add More Files</button>
+            {% endif %}
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+
+    <script>
+        function addFileUploadField() {
+            var formContainer = document.getElementById('form-container');
+            var newForm = document.createElement('div');
+            newForm.className = 'file-upload';
+
+            var label = document.createElement('label');
+            label.htmlFor = 'id_file';
+            label.innerText = 'File:';
+
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.name = 'file';
+
+            newForm.appendChild(label);
+            newForm.appendChild(input);
+            formContainer.appendChild(newForm);
+        }
+    </script>
+{% endblock %}

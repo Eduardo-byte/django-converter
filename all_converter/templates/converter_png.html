@@ -28,7 +28,7 @@
             </script>
             {% if uploaded %}
             {% if saved_image_names %}
-                <a href="{% url 'download_images' %}?{% for name in saved_image_names %}image_names={{ name }}&{% endfor %}">Download Converted Images</a>
+                <a href="{% url 'download-images' %}?{% for name in saved_image_names %}image_names={{ name }}&{% endfor %}">Download Converted Images</a>
                 <button type="button" onclick="window.location.href='/'">Upload New Images</button>
             {% endif %}
             

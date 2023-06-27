@@ -15,54 +15,11 @@ from django.core.files.storage import default_storage
 import zipfile
 from ..forms  import ImageForm
 
-# def converter_png(request):
-#     """Process images uploaded by users"""
-#     if request.method == 'GET':
-#         path = 'media/images/'
-#         for images in os.listdir(path):   
-#             os.remove(f'{path}{images}')
-#     pwd = os.getcwd()
-#     if request.method == 'POST':
-#         form = ImageForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             image_form = form.save(commit=False)
-#             image_name = image_form.title
-#             image_form.save()
-#             # Get the current instance object to display in the template
-#             img_obj = form.instance
-#             print(os.getcwd())
-#             img_png = Image.open(f'media/{img_obj.image.name}')
-#             file_path = img_png.filename
-#             file_path = os.path.splitext(file_path)[0]
-#             file_name = basename(file_path)
-#             # img_png.save(f'./{new_folder}{img_png.filename}', 'png')
-#             img_png.save(f'media/images/{image_name}.png', 'png')
-            
-#             return render(request, 'events/converter_png.html', {'form': form, 'img_obj': img_obj, 'img_png': image_name, 'pwd': pwd} )
-#     else:
-#         form = ImageForm()
-        
-#     return render(request, 
-#         'events/converter_png.html', 
-#         {
-#             'form': form,
-#             'pwd': pwd,
-#         })
-    
-# def download(request):
-#     file_path = 'myclub_website/media/images/artem-sapegin-XGDBdSQ70O0-unsplash.png'
-#     with open(file_path, 'rb') as fh:
-#         response = HttpResponse(fh.read(), content_type="application/vnd.png")
-#         response['Content-Disposition'] = 'inline; filename=' + file_path
-#         return response
-#     raise Http404
-
 
 
 def converter_png(request):
     """Process images uploaded by users"""
-    path = 'media/images/'
+    path = 'images/'
     
     if request.method == 'GET':
         # Delete existing images in the "media/images/" directory
@@ -110,7 +67,7 @@ def download_images(request):
     with default_storage.open(zip_filename, 'wb') as zip_file:
         with zipfile.ZipFile(zip_file, 'w') as zf:
             for image_name in image_names:
-                image_path = os.path.join('media/images', image_name)
+                image_path = os.path.join('images/', image_name)
                 zf.write(image_path, basename(image_path))
     
     response = HttpResponse(content_type='application/zip')
