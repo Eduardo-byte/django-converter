@@ -16,10 +16,22 @@ class ImageForm(forms.ModelForm):
         fields = ('image',)
         
 class FileForm(forms.ModelForm):
-    file1 = forms.FileField(label='PDF File 1')
-    file2 = forms.FileField(label='PDF File 2')
+    def __init__(self, *args, file_field_count, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for i in range(file_field_count):
+            self.fields[f'file{i}'] = forms.FileField(label=f'PDF File {i + 1}')
 
     class Meta:
-        model = Pdf
-        fields = ('file1', 'file2')
+        model = Pdf  
+        fields = [] 
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        has_files = any(cleaned_data.get(f'file{i}') for i in range(len(self.fields)))
+        if not has_files:
+            raise forms.ValidationError("At least one file must be uploaded.")
+
+        return cleaned_data
         

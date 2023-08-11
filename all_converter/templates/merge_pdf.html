@@ -14,11 +14,11 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div id="form-container">
-                        {{ form.file1.label_tag }}
-                        {{ form.file1 }}
-                        <br>
-                        {{ form.file2.label_tag }}
-                        {{ form.file2 }}
+                        {% for field in form %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <br>
+                        {% endfor %}
                     </div>
                     <button type="submit">Merge</button>
                 </form>
@@ -29,22 +29,29 @@
     </div>
 
     <script>
+        var fileFieldCount = {{ form|length }};
+        var new_field = 3
+
         function addFileUploadField() {
             var formContainer = document.getElementById('form-container');
             var newForm = document.createElement('div');
             newForm.className = 'file-upload';
 
             var label = document.createElement('label');
-            label.htmlFor = 'id_file';
-            label.innerText = 'File:';
+            label.htmlFor = 'id_file' + fileFieldCount;
+            label.innerText = 'PDF File ' + new_field +': ';
 
             var input = document.createElement('input');
             input.type = 'file';
-            input.name = 'file';
+            input.name = 'file' + fileFieldCount;
+            input.id = 'id_file' + fileFieldCount;
 
             newForm.appendChild(label);
             newForm.appendChild(input);
             formContainer.appendChild(newForm);
+
+            fileFieldCount++;
+            new_field++;
         }
     </script>
 {% endblock %}

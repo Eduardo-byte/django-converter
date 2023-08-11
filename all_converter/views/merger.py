@@ -16,33 +16,24 @@ from django.core.files.storage import default_storage
 import zipfile
 from ..forms  import FileForm
 
-def merge_pdf(request):
-    """Process PDF files uploaded by users"""
-    path = 'pdf_files/'
 
-    if request.method == 'GET':
-        # Delete existing files in the "pdf_files/" directory
-        for pdf in os.listdir(path):
-            os.remove(os.path.join(path, pdf))
+def merge_pdf(request):
+    path = 'pdf_files/'
+    fileFieldCount = 2  
 
     if request.method == 'POST':
-        form = FileForm(request.POST, request.FILES)
+        form = FileForm(request.POST, request.FILES, file_field_count=fileFieldCount)
 
         if form.is_valid():
-            # Save all uploaded PDF files
-            files = request.FILES.getlist('file')
-            files_saved_names = []
+            pdf_instances = []
 
-            for file in files:
-                file_form = form.save(commit=False)
-                file_form.file = file
-                file_form.save()
-
-                # Get the current instance object to display in the template
-                pdf_obj = form.instance
-                pdf_path = pdf_obj.file.path
-                pdf_name = basename(pdf_path)
-                files_saved_names.append(pdf_name)
+            for i in range(fileFieldCount):
+                file_field_name = f'file{i}'
+                if file_field_name in request.FILES:
+                    pdf_instance = form.save(commit=False)
+                    pdf_instance.file = request.FILES[file_field_name]
+                    pdf_instance.save()
+                    pdf_instances.append(pdf_instance)
 
             merger = PyPDF2.PdfMerger()
             for pdf_file in os.listdir(path):
@@ -53,13 +44,12 @@ def merge_pdf(request):
             merger.write(merged_pdf_path)
             merger.close()
 
-            # Provide the merged PDF file for download
             with open(merged_pdf_path, 'rb') as file:
-                response = HttpResponse(file, content_type='application/pdf')
+                response = HttpResponse(file.read(), content_type='application/pdf')
                 response['Content-Disposition'] = 'attachment; filename="merged.pdf"'
                 return response
 
     else:
-        form = FileForm()
+        form = FileForm(file_field_count=fileFieldCount)
 
     return render(request, 'merge_pdf.html', {'form': form, 'uploaded': False})
