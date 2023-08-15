@@ -1,6 +1,5 @@
 import PyPDF2
 from django.shortcuts import render, redirect
-#from time import gmtime, strftime
 from ..models import Image
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.http import FileResponse
